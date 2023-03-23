@@ -1,24 +1,22 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { v4 as uuidv4 } from "uuid";
 
-const Form = ({ handleShow }) => {
-    //Lấy hàm thêm dữ liệu
-    const { addUser } = useContext(UserContext);
-    // Khởi tạo newUser
-    const [formData, setFormData] = useState({
-        id: "",
-        name: "",
-        age: "",
-        address: "",
-        phone: "",
+const Form = (user) => {
+    const [newUser, getUpUser] = useState({
+        id: user.id,
+        name: user.id,
+        age: user.age,
+        address: user.address,
+        phone: user.phone,
     });
+    //Lấy hàm thêm dữ liệu
+    const { updateUser } = useContext(UserContext);
     // Khởi tạo error
     const [formErrors, setFormErrors] = useState({});
     // Kiểm tra đối tượng
     const validateForm = () => {
         const errors = {};
-        if (!formData.name) {
+        if (!newUser.name) {
             errors.name = "Name is required";
         }
         // if (!formData.email) {
@@ -26,45 +24,19 @@ const Form = ({ handleShow }) => {
         // } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
         //     errors.email = 'Email is invalid';
         // }
-        if (!formData.age.match(/^\d+/)) {
+        if (!newUser.age.match(/^\d+/)) {
             errors.age = "Age is required";
         }
-        if (!formData.address) {
+        if (!newUser.address) {
             errors.address = "Address is required";
         }
-        if (!formData.phone) {
+        if (!newUser.phone) {
             errors.phone = "Phone is required";
         }
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     };
-    // Sự kiện submit
-    const handleSubmit = () => {
-        // Nếu kiểm tra thành công
-        if (validateForm()) {
-            //Khởi tạo id
-            formData.id = uuidv4();
-            // Thêm newUser vào danh sách
-            addUser(formData);
-            // Set lại form
-            setFormData({
-                id: "",
-                name: "",
-                age: "",
-                address: "",
-                phone: "",
-            });
-            handleShow();
-        }
-    };
-    // Lắng nghe sự kiện thay đổi
-    const handleChange = (event) => {
-        const target = event.target;
-        // const value = target.type === 'checkbox' ? target.checked : target.value;
-        const value = target.value;
-        const name = target.name;
-        setFormData({ ...formData, [name]: value });
-    };
+
     return (
         <div className="col-5">
             <div className="row g-3 align-items-center">
@@ -75,8 +47,7 @@ const Form = ({ handleShow }) => {
                     <input
                         type="text"
                         name="name"
-                        value={formData.name}
-                        onChange={handleChange}
+                        value={newUser.name}
                         className="form-control"
                         style={{ marginBottom: 10 }}
                     />
@@ -95,8 +66,7 @@ const Form = ({ handleShow }) => {
                     <input
                         type="number"
                         name="age"
-                        value={formData.age}
-                        onChange={handleChange}
+                        value={newUser.age}
                         className="form-control"
                         style={{ marginBottom: 10 }}
                         aria-describedby="passwordHelpInline"
@@ -119,8 +89,7 @@ const Form = ({ handleShow }) => {
                     <input
                         type="text"
                         name="address"
-                        value={formData.address}
-                        onChange={handleChange}
+                        value={newUser.address}
                         className="form-control"
                         style={{ marginBottom: 10 }}
                         aria-describedby="passwordHelpInline"
@@ -143,8 +112,7 @@ const Form = ({ handleShow }) => {
                     <input
                         type="text"
                         name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
+                        value={newUser.phone}
                         className="form-control"
                         style={{ marginBottom: 10 }}
                         aria-describedby="passwordHelpInline"
@@ -158,12 +126,8 @@ const Form = ({ handleShow }) => {
                 </div>
             </div>
             <div className="row g-3 d-flex flex-row justify-content-between mt-1">
-                <button
-                    className="btn btn-primary"
-                    onClick={handleSubmit}
-                    type="button"
-                >
-                    Create
+                <button className="btn btn-warning" type="button">
+                    Update
                 </button>
                 {/* ) : (
           <button className="btn btn-warning" type="button">
